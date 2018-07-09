@@ -18,7 +18,7 @@ public class UserMeal {
         this.dateTime = dateTime;
         this.description = description;
         this.calories = calories;
-        daysCalories.put(ld, (daysCalories.get(ld) == null) ? calories : daysCalories.get(ld) + calories);
+        daysCalories.put(ld, daysCalories.getOrDefault(ld, 0) + calories);
     }
 
     public LocalDateTime getDateTime() {
