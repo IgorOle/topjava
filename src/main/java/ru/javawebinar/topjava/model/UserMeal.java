@@ -14,7 +14,7 @@ public class UserMeal {
     private static Map<LocalDate, Integer> daysCalories = new HashMap<>();
 
     public UserMeal(LocalDateTime dateTime, String description, int calories) {
-        LocalDate ld = LocalDate.of(dateTime.getYear(), dateTime.getMonth(), dateTime.getDayOfMonth());
+        LocalDate ld = dateTime.toLocalDate();
         this.dateTime = dateTime;
         this.description = description;
         this.calories = calories;
