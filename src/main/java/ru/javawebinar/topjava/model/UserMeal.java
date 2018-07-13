@@ -34,7 +34,6 @@ public class UserMeal {
     }
 
     public int getCaloriesPerDay(LocalDateTime dateTime) {
-        LocalDate ld = LocalDate.of(dateTime.getYear(), dateTime.getMonth(), dateTime.getDayOfMonth());
-        return (daysCalories.get(ld) == null) ? 0 : daysCalories.get(ld);
+        return (daysCalories.get(dateTime.toLocalDate()) == null) ? 0 : daysCalories.get(dateTime.toLocalDate());
     }
 }
