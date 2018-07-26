@@ -4,7 +4,6 @@ import ru.javawebinar.topjava.dao.DaoMeal;
 import ru.javawebinar.topjava.dao.DaoMealMemmory;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.MealWithExceed;
-import ru.javawebinar.topjava.storage.DataMemmory;
 import ru.javawebinar.topjava.util.MealsUtil;
 
 import javax.servlet.ServletException;
@@ -12,17 +11,17 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 
 public class MealServlet extends HttpServlet {
-    private DaoMeal daoMeal = new DaoMealMemmory(new DataMemmory());
+    private DaoMeal daoMeal;
+    private static final int CALORIES_PER_DAY_MAX = 2001;
 
     @Override
     public void init() throws ServletException {
         super.init();
+        this.daoMeal = new DaoMealMemmory();
     }
 
     @Override
@@ -30,11 +29,12 @@ public class MealServlet extends HttpServlet {
         req.setCharacterEncoding("UTF-8");
         String action = req.getParameter("action");
         String id = req.getParameter("id");
-        if (action != null && id != null) {
-            if ("del".equals(action))
-                daoMeal.delete(Integer.parseInt(id));
+        if (action != null && id != null && "del".equals(action)) {
+            daoMeal.delete(Integer.parseInt(id));
+            resp.sendRedirect("meals");
+            return;
         }
-        List<MealWithExceed> filteredWithExceeded = MealsUtil.getFilteredWithExceeded(daoMeal.getAll(), 4001);
+        List<MealWithExceed> filteredWithExceeded = MealsUtil.getFilteredWithExceeded(daoMeal.getAll(), CALORIES_PER_DAY_MAX);
         req.setAttribute("filteredWithExceeded", filteredWithExceeded);
         req.getRequestDispatcher("/meals.jsp").forward(req, resp);
     }
@@ -42,18 +42,25 @@ public class MealServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setCharacterEncoding("UTF-8");
-        if (req.getParameter("saveBtn") != null) {
-            String id = req.getParameter("mealId");
-            daoMeal.delete(Integer.parseInt(id));
-            daoMeal.save(
-                    new Meal(LocalDateTime.of(LocalDate.parse(req.getParameter("dateMeal")), LocalTime.parse(req.getParameter("timeMeal"))),
-                            req.getParameter("descr"),
-                            Integer.parseInt(req.getParameter("calories")),
-                            daoMeal.getNewId())
-            );
+        Meal meal;
+        if (req.getParameter("newBtn") != null) {
+            meal = new Meal();
+            fillMeal(meal, req);
+            daoMeal.save(meal);
         }
-        List<MealWithExceed> filteredWithExceeded = MealsUtil.getFilteredWithExceeded(daoMeal.getAll(), 4001);
+        if (req.getParameter("saveBtn") != null) {
+            meal = daoMeal.get(Integer.parseInt(req.getParameter("mealId")));
+            fillMeal(meal, req);
+            daoMeal.update(meal);
+        }
+        List<MealWithExceed> filteredWithExceeded = MealsUtil.getFilteredWithExceeded(daoMeal.getAll(), CALORIES_PER_DAY_MAX);
         req.setAttribute("filteredWithExceeded", filteredWithExceeded);
         req.getRequestDispatcher("/meals.jsp").forward(req, resp);
+    }
+
+    private void fillMeal(Meal meal, HttpServletRequest req) {
+        meal.setCalories(Integer.parseInt(req.getParameter("calories")));
+        meal.setDateTime(LocalDateTime.parse(req.getParameter("dateTimeMeal")));
+        meal.setDescription(req.getParameter("descr"));
     }
 }

@@ -1,35 +1,66 @@
 package ru.javawebinar.topjava.dao;
 
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.storage.DataMemmory;
 
+import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class DaoMealMemmory implements DaoMeal {
-    private Map<Integer, Meal> meals;
-    private AtomicInteger IDs;
 
-    public DaoMealMemmory(DataMemmory dataMemmory) {
-        this.meals = dataMemmory.meals;
-        this.IDs = dataMemmory.IDs;
+    public final Map<Integer, Meal> meals = new ConcurrentHashMap<>();
+    public final AtomicInteger IDs = new AtomicInteger(1);
+
+    public DaoMealMemmory() {
+        init();
+    }
+
+    private void init() {
+        int id = IDs.getAndIncrement();
+        Meal tempMeal = new Meal(LocalDateTime.of(2018, Month.JUNE, 21, 10, 0), "Завтрак", 500);
+        tempMeal.setId(id);
+        meals.put(id, tempMeal);
+
+        id = IDs.getAndIncrement();
+        tempMeal = new Meal(LocalDateTime.of(2018, Month.JUNE, 21, 13, 0), "Обед", 1500);
+        tempMeal.setId(id);
+        meals.put(id, tempMeal);
+
+        id = IDs.getAndIncrement();
+        tempMeal = new Meal(LocalDateTime.of(2018, Month.JUNE, 21, 18, 0), "ужин", 2500);
+        tempMeal.setId(id);
+        meals.put(id, tempMeal);
+
+        id = IDs.getAndIncrement();
+        tempMeal = new Meal(LocalDateTime.of(2018, Month.JUNE, 22, 10, 0), "Завтрак", 500);
+        tempMeal.setId(id);
+        meals.put(id, tempMeal);
+
+        id = IDs.getAndIncrement();
+        tempMeal = new Meal(LocalDateTime.of(2018, Month.JUNE, 22, 12, 0), "Обед", 100);
+        tempMeal.setId(id);
+        meals.put(id, tempMeal);
+
+        id = IDs.getAndIncrement();
+        tempMeal = new Meal(LocalDateTime.of(2018, Month.JUNE, 22, 19, 0), "ужин", 1500);
+        tempMeal.setId(id);
+        meals.put(id, tempMeal);
+
     }
 
     @Override
-    public void clear() {
-        meals.clear();
+    public Meal update(Meal meal) {
+        return meals.put(meal.getId(), meal);
     }
 
     @Override
-    public void update(Meal meal) {
-        meals.put(meal.getId(), meal);
-    }
-
-    @Override
-    public void save(Meal meal) {
-        update(meal);
+    public Meal save(Meal meal) {
+        meal.setId(getNewId());
+        return meals.put(meal.getId(), meal);
     }
 
     @Override
@@ -44,16 +75,10 @@ public class DaoMealMemmory implements DaoMeal {
 
     @Override
     public List<Meal> getAll() {
-        return new ArrayList<Meal>(meals.values());
+        return new ArrayList<>(meals.values());
     }
 
-    @Override
-    public int size() {
-        return meals.size();
-    }
-
-    @Override
-    public int getNewId() {
+    private int getNewId() {
         return IDs.getAndIncrement();
     }
 }

@@ -8,16 +8,13 @@
 
 <table border="0">
     <c:forEach var="meal" items="${filteredWithExceeded}">
-        <c:set var="className" value="limitOk"></c:set>
-        <c:if test="${meal.exceed == true}">
-            <c:set var="className" value="overLimit"></c:set>
-        </c:if>
+        <c:set var="className" value="${meal.exceed == true ? 'overLimit':'limitOk'}"></c:set>
         <tr class="${className}">
             <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.MealWithExceed"/>
-            <form name="formElement" action="meals?action=upd&id=${meal.id}" method="post" enctype="application/x-www-form-urlencoded">
+            <form name="formElement" action="meals?action=upd&id=${meal.id}" method="post"
+                  enctype="application/x-www-form-urlencoded">
                 <input type="hidden" name="mealId" value="${meal.id}">
-                <td><input type="date" name="dateMeal" value="${meal.dateTime.toLocalDate()}"></td>
-                <td><input type="time" name="timeMeal" value="${meal.dateTime.toLocalTime()}"></td>
+                <td><input type="datetime-local" name="dateTimeMeal" value="${meal.dateTime}"></td>
                 <td><input type="text" name="descr" value="${meal.description}"></td>
                 <td><input type="text" name="calories" value="${meal.calories}"></td>
                 <td><input name="saveBtn" type="submit" value="сохранить"></td>
@@ -25,6 +22,15 @@
             </form>
         </tr>
     </c:forEach>
+    <form name="formElement" action="meals?action=new" method="post"
+          enctype="application/x-www-form-urlencoded">
+        <input type="hidden" name="mealId">
+        <td><input type="datetime-local" name="dateTimeMeal"></td>
+        <td><input type="text" name="descr"></td>
+        <td><input type="text" name="calories"></td>
+        <td><input name="newBtn" type="submit" value="добавить"></td>
+        <td>&nbsp;</td>
+    </form>
 </table>
 
 </body>
