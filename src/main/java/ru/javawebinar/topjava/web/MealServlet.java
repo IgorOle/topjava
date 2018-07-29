@@ -30,10 +30,22 @@ public class MealServlet extends HttpServlet {
         req.setCharacterEncoding("UTF-8");
         String action = req.getParameter("action");
         String id = req.getParameter("id");
-        if (action != null && id != null && "del".equals(action)) {
-            daoMeal.delete(Integer.parseInt(id));
-            resp.sendRedirect("meals");
-            return;
+        if (action != null) {
+            if (id != null) {
+                if ("del".equals(action)) {
+                    daoMeal.delete(Integer.parseInt(id));
+                    resp.sendRedirect("meals");
+                    return;
+                }
+                if ("edit".equals(action)) {
+                    Meal meal = daoMeal.get(Integer.parseInt(id));
+                    req.setAttribute("dateTimeMeal", meal.getDateTime());
+                    req.setAttribute("descr", meal.getDescription());
+                    req.setAttribute("calories", meal.getCalories());
+                    req.setAttribute("mealId", id);
+                }
+            }
+            req.getRequestDispatcher("/mealEdit.jsp").forward(req, resp);
         }
         List<MealWithExceed> filteredWithExceeded = MealsUtil.getFilteredWithExceeded(daoMeal.getAll(), CALORIES_PER_DAY_MAX);
         req.setAttribute("filteredWithExceeded", filteredWithExceeded);
@@ -44,16 +56,19 @@ public class MealServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("text/html;charset=utf-8");
         req.setCharacterEncoding("UTF-8");
-        Meal meal;
-        if (req.getParameter("newBtn") != null) {
-            meal = new Meal();
-            fillMeal(meal, req);
-            daoMeal.save(meal);
-        }
+
         if (req.getParameter("saveBtn") != null) {
-            meal = daoMeal.get(Integer.parseInt(req.getParameter("mealId")));
-            fillMeal(meal, req);
-            daoMeal.update(meal);
+            String id = req.getParameter("mealId");
+            Meal meal;
+            if ("".equals(id)) {
+                meal = new Meal();
+                fillMeal(meal, req);
+                daoMeal.save(meal);
+            } else {
+                meal = daoMeal.get(Integer.parseInt(id));
+                fillMeal(meal, req);
+                daoMeal.update(meal);
+            }
         }
         List<MealWithExceed> filteredWithExceeded = MealsUtil.getFilteredWithExceeded(daoMeal.getAll(), CALORIES_PER_DAY_MAX);
         req.setAttribute("filteredWithExceeded", filteredWithExceeded);
