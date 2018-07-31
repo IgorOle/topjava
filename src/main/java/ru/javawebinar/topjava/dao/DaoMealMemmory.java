@@ -20,46 +20,25 @@ public class DaoMealMemmory implements DaoMeal {
     }
 
     private void init() {
-        int id = IDs.getAndIncrement();
-        Meal tempMeal = new Meal(LocalDateTime.of(2018, Month.JUNE, 21, 10, 0), "Завтрак", 500);
-        tempMeal.setId(id);
-        meals.put(id, tempMeal);
-
-        id = IDs.getAndIncrement();
-        tempMeal = new Meal(LocalDateTime.of(2018, Month.JUNE, 21, 13, 0), "Обед", 1500);
-        tempMeal.setId(id);
-        meals.put(id, tempMeal);
-
-        id = IDs.getAndIncrement();
-        tempMeal = new Meal(LocalDateTime.of(2018, Month.JUNE, 21, 18, 0), "ужин", 2500);
-        tempMeal.setId(id);
-        meals.put(id, tempMeal);
-
-        id = IDs.getAndIncrement();
-        tempMeal = new Meal(LocalDateTime.of(2018, Month.JUNE, 22, 10, 0), "Завтрак", 500);
-        tempMeal.setId(id);
-        meals.put(id, tempMeal);
-
-        id = IDs.getAndIncrement();
-        tempMeal = new Meal(LocalDateTime.of(2018, Month.JUNE, 22, 12, 0), "Обед", 100);
-        tempMeal.setId(id);
-        meals.put(id, tempMeal);
-
-        id = IDs.getAndIncrement();
-        tempMeal = new Meal(LocalDateTime.of(2018, Month.JUNE, 22, 19, 0), "ужин", 1500);
-        tempMeal.setId(id);
-        meals.put(id, tempMeal);
-
-    }
-
-    @Override
-    public Meal update(Meal meal) {
-        return meals.put(meal.getId(), meal);
+        int id = getNewId();
+        meals.put(id, new Meal(id, LocalDateTime.of(2018, Month.JUNE, 21, 10, 0), "Завтрак", 500));
+        id = getNewId();
+        meals.put(id, new Meal(id, LocalDateTime.of(2018, Month.JUNE, 21, 13, 0), "Обед", 1500));
+        id = getNewId();
+        meals.put(id, new Meal(id, LocalDateTime.of(2018, Month.JUNE, 21, 18, 0), "ужин", 2500));
+        id = getNewId();
+        meals.put(id, new Meal(id, LocalDateTime.of(2018, Month.JUNE, 22, 10, 0), "Завтрак", 500));
+        id = getNewId();
+        meals.put(id, new Meal(id, LocalDateTime.of(2018, Month.JUNE, 22, 12, 0), "Обед", 100));
+        id = getNewId();
+        meals.put(id, new Meal(id, LocalDateTime.of(2018, Month.JUNE, 22, 19, 0), "ужин", 1500));
     }
 
     @Override
     public Meal save(Meal meal) {
-        meal.setId(getNewId());
+        if (meal.getId() == null) {
+            meal.setId(getNewId());
+        }
         return meals.put(meal.getId(), meal);
     }
 

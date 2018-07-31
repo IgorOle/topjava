@@ -6,8 +6,6 @@ import java.util.List;
 
 public interface DaoMeal {
 
-    Meal update(Meal meal);
-
     Meal save(Meal meal);
 
     Meal get(int id);

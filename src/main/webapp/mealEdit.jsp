@@ -7,7 +7,6 @@
 <form name="formElement" action="meals?action=new" method="post"
       enctype="application/x-www-form-urlencoded">
     <input type="hidden" name="mealId" value="${mealId}">
-
     <table>
         <tr><th>Дата</th><th>Описание</th><th>Каллории</th></tr>
         <td><input type="datetime-local" name="dateTimeMeal" value="${dateTimeMeal}"></td>

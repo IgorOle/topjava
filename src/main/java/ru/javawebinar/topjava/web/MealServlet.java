@@ -59,25 +59,15 @@ public class MealServlet extends HttpServlet {
 
         if (req.getParameter("saveBtn") != null) {
             String id = req.getParameter("mealId");
-            Meal meal;
-            if ("".equals(id)) {
-                meal = new Meal();
-                fillMeal(meal, req);
-                daoMeal.save(meal);
-            } else {
-                meal = daoMeal.get(Integer.parseInt(id));
-                fillMeal(meal, req);
-                daoMeal.update(meal);
-            }
+            daoMeal.save(new Meal("".equals(id) ? null : Integer.parseInt(id),
+                    LocalDateTime.parse(req.getParameter("dateTimeMeal")),
+                    req.getParameter("descr"),
+                    Integer.parseInt(req.getParameter("calories")))
+            );
         }
         List<MealWithExceed> filteredWithExceeded = MealsUtil.getFilteredWithExceeded(daoMeal.getAll(), CALORIES_PER_DAY_MAX);
         req.setAttribute("filteredWithExceeded", filteredWithExceeded);
         req.getRequestDispatcher("/meals.jsp").forward(req, resp);
     }
 
-    private void fillMeal(Meal meal, HttpServletRequest req) {
-        meal.setCalories(Integer.parseInt(req.getParameter("calories")));
-        meal.setDateTime(LocalDateTime.parse(req.getParameter("dateTimeMeal")));
-        meal.setDescription(req.getParameter("descr"));
-    }
 }
