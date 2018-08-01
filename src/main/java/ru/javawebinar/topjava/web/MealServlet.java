@@ -31,15 +31,17 @@ public class MealServlet extends HttpServlet {
         String action = req.getParameter("action");
         String id = req.getParameter("id");
         if (action != null) {
-            if (id != null) {
-                if ("del".equals(action)) {
+            switch (action) {
+                case "del":
                     daoMeal.delete(Integer.parseInt(id));
                     resp.sendRedirect("meals");
                     return;
-                }
-                if ("edit".equals(action)) {
+                case "edit":
                     req.setAttribute("meal", daoMeal.get(Integer.parseInt(id)));
-                }
+                    break;
+                case "add":
+                    req.setAttribute("meal", new Meal(null, LocalDateTime.now(), "", 0));
+                    break;
             }
             req.getRequestDispatcher("/mealEdit.jsp").forward(req, resp);
         }
