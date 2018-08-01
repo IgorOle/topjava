@@ -29,6 +29,10 @@ public class MealWithExceed {
         return calories;
     }
 
+    public boolean isExceed() {
+        return exceed;
+    }
+
     public int getId() {
         return id;
     }

@@ -38,11 +38,7 @@ public class MealServlet extends HttpServlet {
                     return;
                 }
                 if ("edit".equals(action)) {
-                    Meal meal = daoMeal.get(Integer.parseInt(id));
-                    req.setAttribute("dateTimeMeal", meal.getDateTime());
-                    req.setAttribute("descr", meal.getDescription());
-                    req.setAttribute("calories", meal.getCalories());
-                    req.setAttribute("mealId", id);
+                    req.setAttribute("meal", daoMeal.get(Integer.parseInt(id)));
                 }
             }
             req.getRequestDispatcher("/mealEdit.jsp").forward(req, resp);
