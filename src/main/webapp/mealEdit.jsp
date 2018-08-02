@@ -4,6 +4,7 @@
     <title>Edit form</title>
 </head>
 <body>
+<jsp:useBean id="meal" type="ru.javawebinar.topjava.model.Meal" scope="request"/>
 <form name="formElement" action="meals?action=new" method="post"
       enctype="application/x-www-form-urlencoded">
     <input type="hidden" name="mealId" value="${meal.id}">
