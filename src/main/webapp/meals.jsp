@@ -24,6 +24,13 @@
     <hr/>
     <table border="1" cellpadding="8" cellspacing="0">
         <thead>
+        <form method="post" action="meals?action=filter">
+            <input type="date" name="startDate" value="${param.startDate}"/>
+            <input type="date" name="endDate" value="${param.endDate}">
+            <input type="time" name="startTime" value="${param.startTime}"/>
+            <input type="time" name="endTime" value="${param.endTime}">
+            <input type="submit" value="filter">
+        </form>
         <tr>
             <th>Date</th>
             <th>Description</th>

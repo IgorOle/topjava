@@ -1,9 +1,15 @@
 package ru.javawebinar.topjava.repository.mock;
 
+import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
+import ru.javawebinar.topjava.to.MealWithExceed;
+import ru.javawebinar.topjava.util.DateTimeUtil;
+import ru.javawebinar.topjava.util.MealsUtil;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.Month;
 import java.util.Collection;
 import java.util.Collections;
@@ -12,9 +18,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+@Repository
 public class InMemoryMealRepositoryImpl implements MealRepository {
     private Map<Integer, Map<Integer, Meal>> repository = new ConcurrentHashMap<>();
     private AtomicInteger counter = new AtomicInteger(0);
+
 
     {
         save(1, new Meal(LocalDateTime.of(2015, Month.MAY, 30, 10, 0), "Завтрак", 500));
@@ -36,33 +44,42 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
     }
 
     @Override
-    public boolean delete(Integer userId, int id) {
+    public boolean delete(Integer id, Integer userId) {
         Map<Integer, Meal> meals = repository.get(userId);
         return meals == null ? false : meals.remove(id) != null;
     }
 
     @Override
-    public Meal get(Integer userId, int id) {
+    public Meal get(Integer id, Integer userId) {
         Map<Integer, Meal> meals = repository.get(userId);
         return meals == null ? null : meals.get(id);
     }
 
     @Override
-    public Collection<Meal> getAll(Integer userId) {
+    public Collection<MealWithExceed> getAll(Integer userId) {
         Map<Integer, Meal> meals = repository.get(userId);
         return meals == null ?
                 Collections.emptyList()
                 :
-                meals.values().stream()
-                .sorted((o1, o2) -> (-1 * o1.getDateTime().compareTo(o2.getDateTime())))
+                MealsUtil.getWithExceeded(
+                        meals.values().stream()
+                        .sorted((o1, o2) -> (-1 * o1.getDateTime().compareTo(o2.getDateTime())))
+                        .collect(Collectors.toList()), MealsUtil.DEFAULT_CALORIES_PER_DAY
+                );
+    }
+
+    @Override
+    public Collection<MealWithExceed> getAll(Integer userId, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime) {
+        return getAll(userId).stream()
+                .filter((m) -> DateTimeUtil.isBetween(m.getDateTime().toLocalDate(), startDate, endDate) )
                 .collect(Collectors.toList());
     }
 
-    public Collection<Meal> getAllFiltered(Integer userId, LocalDateTime startDT, LocalDateTime endDT) {
-        return getAll(userId).stream().filter(m->{m.getDateTime()
-
-        }).collect(Collectors.toList());
-
-    }
+//    public Collection<MealWithExceed> getAllFiltered(Integer userId, LocalDateTime startDT, LocalDateTime endDT) {
+//        return getAll(userId).stream()
+//                .filter((m) -> DateTimeUtil.isBetween(m.getDateTime(), startDT, endDT))
+//                .collect(Collectors.toList());
+//
+//    }
 }
 

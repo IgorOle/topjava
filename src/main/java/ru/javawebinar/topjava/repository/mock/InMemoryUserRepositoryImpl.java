@@ -32,7 +32,7 @@ public class InMemoryUserRepositoryImpl implements UserRepository {
     @Override
     public User save(User user) {
         log.info("save {}", user);
-        if (repository.values().stream().filter(u -> u.getName().equalsIgnoreCase(user.getName())).findAny().get() != null) {
+        if (repository.values().stream().filter(u -> u.getName().equalsIgnoreCase(user.getName())).findAny().orElse(null) != null) {
             //подсказки пункт 1.3 ? (порядок должен быть зафиксированным - куда фиксировать как фиксировать)
             log.info("save {} dublicate NAME", user);
             return null;
@@ -58,7 +58,9 @@ public class InMemoryUserRepositoryImpl implements UserRepository {
     @Override
     public User getByEmail(String email) {
         log.info("getByEmail {}", email);
-        return repository.values().stream().filter(u -> u.getEmail().equalsIgnoreCase(email)).findAny().get();
+        return repository.values().stream()
+                .filter(u -> u.getEmail().equalsIgnoreCase(email))
+                .findAny().get();
     }
 
 }
