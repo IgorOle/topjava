@@ -11,6 +11,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Collection;
 
+import static ru.javawebinar.topjava.util.ValidationUtil.checkNotFound;
+
 @Service
 public class MealServiceImpl implements MealService {
 
@@ -22,27 +24,27 @@ public class MealServiceImpl implements MealService {
     }
 
     @Override
-    public Collection<MealWithExceed> getAll(Integer userId) {
-        return repository.getAll(userId);
+    public Collection<MealWithExceed> getAll(Integer userId) throws NotFoundException {
+        return checkNotFound(repository.getAll(userId), "not found meals");
+    }
+
+    @Override
+    public Collection<MealWithExceed> getAll(Integer userId, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime) throws NotFoundException {
+        return repository.getAll(userId, startDate, endDate, startTime, endTime);
     }
 
     @Override
     public void delete(int id, int userId) throws NotFoundException {
-        repository.delete(id, userId);
+        checkNotFound(repository.delete(id, userId), "not fond meal");
     }
 
     @Override
     public void save(Integer userId, Meal meal) throws NotFoundException {
-        repository.save(userId, meal);
+        checkNotFound(repository.save(userId, meal), "not fond meal");
     }
 
     @Override
     public Meal get(int id, int userId) throws NotFoundException {
-        return repository.get(id, userId);
-    }
-
-    @Override
-    public Collection<MealWithExceed> getAll(Integer userId, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime) {
-        return repository.getAll(userId,startDate,endDate,startTime,endTime);
+        return checkNotFound(repository.get(id, userId), "not found meal");
     }
 }

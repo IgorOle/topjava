@@ -42,21 +42,28 @@ public class MealServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
-        if("filter".equals(request.getParameter("action"))) {
+        if ("filter".equals(request.getParameter("action"))) {
+
 
             log.info("getFiltered");
-            request.setAttribute("meals", (mealRestController.getAll()));
+            request.setAttribute("meals",
+                    (mealRestController.getAll(
+                            request.getParameter("startDate"),
+                            request.getParameter("endDate"),
+                            request.getParameter("startTime"),
+                            request.getParameter("endTime")
+                    )));
             request.getRequestDispatcher("/meals.jsp").forward(request, response);
         }
 
         Meal meal;
         LocalDateTime ld = LocalDateTime.parse(request.getParameter("dateTime"));
-        String descr = request.getParameter("description");
+        String description = request.getParameter("description");
         Integer calories = Integer.parseInt(request.getParameter("calories"));
         if (request.getParameter("id").isEmpty()) {
-            meal = new Meal(ld, descr, calories);
+            meal = new Meal(ld, description, calories);
         } else {
-            meal = new Meal(getId(request), ld, descr, calories);
+            meal = new Meal(getId(request), ld, description, calories);
         }
         mealRestController.save(meal);
         log.info(meal.isNew() ? "Create {}" : "Update {}", meal);
@@ -66,7 +73,6 @@ public class MealServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
-
 
         switch (action == null ? "all" : action) {
             case "delete":

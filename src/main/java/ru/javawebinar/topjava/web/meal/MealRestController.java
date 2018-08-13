@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.to.MealWithExceed;
+import ru.javawebinar.topjava.util.DateTimeUtil;
 import ru.javawebinar.topjava.web.SecurityUtil;
 
 import java.time.LocalDate;
@@ -24,8 +25,14 @@ public class MealRestController {
     public Collection<MealWithExceed> getAll() {
         return service.getAll(SecurityUtil.authUserId());
     }
-    public Collection<MealWithExceed> getAll(LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime) {
-        return service.getAll(SecurityUtil.authUserId(), startDate, endDate, startTime, endTime);
+
+    public Collection<MealWithExceed> getAll(String startDate, String endDate, String startTime, String endTime) {
+        return service.getAll(SecurityUtil.authUserId(),
+                "".equals(startDate) ? DateTimeUtil.MIN_DATE : LocalDate.parse(startDate),
+                "".equals(endDate) ? DateTimeUtil.MAX_DATE : LocalDate.parse(endDate),
+                "".equals(startTime) ? LocalTime.MIN : LocalTime.parse(startTime),
+                "".equals(endTime) ? LocalTime.MAX : LocalTime.parse(endTime)
+        );
     }
 
     public void delete(int id) {

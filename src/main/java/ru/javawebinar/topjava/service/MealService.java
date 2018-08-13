@@ -9,7 +9,7 @@ import java.time.LocalTime;
 import java.util.Collection;
 
 public interface MealService {
-    Collection<MealWithExceed> getAll(Integer userId);
+    Collection<MealWithExceed> getAll(Integer userId) throws NotFoundException;
 
     Collection<MealWithExceed> getAll(Integer userId, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime);
 
