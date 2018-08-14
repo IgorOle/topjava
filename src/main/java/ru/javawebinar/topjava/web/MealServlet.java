@@ -43,8 +43,6 @@ public class MealServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
         if ("filter".equals(request.getParameter("action"))) {
-
-
             log.info("getFiltered");
             request.setAttribute("meals",
                     (mealRestController.getAll(

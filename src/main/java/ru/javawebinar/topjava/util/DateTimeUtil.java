@@ -10,19 +10,8 @@ public class DateTimeUtil {
     public static final LocalDate MIN_DATE = LocalDate.parse("1990-01-01 00:00", DATE_TIME_FORMATTER);
     public static final LocalDate MAX_DATE = LocalDate.parse("3000-01-01 23:59", DATE_TIME_FORMATTER);
 
-
-    public static boolean isBetweenTime(LocalTime lt, LocalTime startTime, LocalTime endTime) {
-//        return isBetween(lt, startTime,endTime);
-        return lt.compareTo(startTime) >= 0 && lt.compareTo(endTime) <= 0;
-    }
-
-    public static boolean isBetweenDate(LocalDate dt, LocalDate startDate, LocalDate endDate) {
-        return dt.compareTo(startDate) >= 0 && dt.compareTo(endDate) <= 0;
-    }
-
-    //???
-    public static <T extends LocalDateTime> boolean isBetween(T cur, T start, T end) {
-        return cur.compareTo(start) >= 0 && cur.compareTo(end) <= 0;
+    public static <T extends Comparable> boolean isBetween(T value, T start, T end) {
+        return value.compareTo(start) >= 0 && value.compareTo(end) <= 0;
     }
 
     public static String toString(LocalDateTime ldt) {
