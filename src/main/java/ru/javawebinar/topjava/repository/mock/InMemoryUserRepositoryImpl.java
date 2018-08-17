@@ -7,6 +7,7 @@ import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
 import ru.javawebinar.topjava.util.UsersUtil;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -26,18 +27,13 @@ public class InMemoryUserRepositoryImpl implements UserRepository {
     @Override
     public boolean delete(int id) {
         log.info("delete {}", id);
-        return repository.values().removeIf(v -> v.getId() == id);
+        return (repository.remove(id) != null);
     }
 
     @Override
     public User save(User user) {
         log.info("save {}", user);
-        if (repository.values().stream().filter(u -> u.getName().equalsIgnoreCase(user.getName())).findAny().orElse(null) != null) {
-            //подсказки пункт 1.3 ? (порядок должен быть зафиксированным - куда фиксировать как фиксировать)
-            log.info("save {} dublicate NAME", user);
-            return null;
-        }
-        if (user.getId() == null) {
+        if (user.isNew()) {
             user.setId(counter.incrementAndGet());
         }
         return repository.put(user.getId(), user);
@@ -52,7 +48,7 @@ public class InMemoryUserRepositoryImpl implements UserRepository {
     @Override
     public List<User> getAll() {
         log.info("getAll");
-        return repository.values().stream().sorted().collect(Collectors.toList());
+        return repository.isEmpty() ? Collections.emptyList() : repository.values().stream().sorted().collect(Collectors.toList());
     }
 
     @Override
@@ -60,7 +56,7 @@ public class InMemoryUserRepositoryImpl implements UserRepository {
         log.info("getByEmail {}", email);
         return repository.values().stream()
                 .filter(u -> u.getEmail().equalsIgnoreCase(email))
-                .findAny().get();
+                .findAny().orElse(null);
     }
 
 }

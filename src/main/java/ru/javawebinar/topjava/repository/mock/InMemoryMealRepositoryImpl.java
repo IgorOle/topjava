@@ -3,9 +3,7 @@ package ru.javawebinar.topjava.repository.mock;
 import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
-import ru.javawebinar.topjava.to.MealWithExceed;
 import ru.javawebinar.topjava.util.DateTimeUtil;
-import ru.javawebinar.topjava.util.MealsUtil;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -37,38 +35,34 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
         Map<Integer, Meal> meals = repository.computeIfAbsent(userId, newMeals -> new ConcurrentHashMap<>());
         if (meal.isNew()) {
             meal.setId(counter.incrementAndGet());
+            meals.put(meal.getId(), meal);
+            return meal;
         }
-        meals.put(meal.getId(), meal);
-        return meal;
+        return meals.computeIfPresent(meal.getId(), (key, val) -> meal);
     }
 
     @Override
-    public Boolean delete(Integer id, Integer userId) {
+    public boolean delete(int id, int userId) {
         Map<Integer, Meal> meals = repository.get(userId);
-        return meals == null ? false : meals.remove(id) != null;
+        return meals != null && meals.remove(id) != null;
     }
 
     @Override
-    public Meal get(Integer id, Integer userId) {
+    public Meal get(int id, int userId) {
         Map<Integer, Meal> meals = repository.get(userId);
         return meals == null ? null : meals.get(id);
     }
 
     @Override
-    public Collection<MealWithExceed> getAll(Integer userId) {
+    public Collection<Meal> getAll(int userId) {
         Map<Integer, Meal> meals = repository.get(userId);
         return meals == null ?
                 Collections.emptyList()
                 :
-                MealsUtil.getWithExceeded(
-                        meals.values().stream()
-                                .sorted((o1, o2) -> (-1 * o1.getDateTime().compareTo(o2.getDateTime())))
-                                .collect(Collectors.toList()), MealsUtil.DEFAULT_CALORIES_PER_DAY
-                );
+                meals.values().stream().sorted((o1, o2) -> (o2.getDateTime().compareTo(o1.getDateTime()))).collect(Collectors.toList());
     }
 
-    @Override
-    public Collection<MealWithExceed> getAll(Integer userId, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime) {
+    public Collection<Meal> getAllFiltered(int userId, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime) {
         return getAll(userId).stream()
                 .filter((m) -> DateTimeUtil.isBetween(m.getDateTime().toLocalDate(), startDate, endDate)
                         && DateTimeUtil.isBetween(m.getDateTime().toLocalTime(), startTime, endTime))

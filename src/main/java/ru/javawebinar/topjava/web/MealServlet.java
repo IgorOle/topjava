@@ -30,7 +30,6 @@ public class MealServlet extends HttpServlet {
         appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml");
         System.out.println("Bean definition names: " + Arrays.toString(appCtx.getBeanDefinitionNames()));
         mealRestController = appCtx.getBean(MealRestController.class);
-
     }
 
     @Override
@@ -45,7 +44,7 @@ public class MealServlet extends HttpServlet {
         if ("filter".equals(request.getParameter("action"))) {
             log.info("getFiltered");
             request.setAttribute("meals",
-                    (mealRestController.getAll(
+                    (mealRestController.getAllFiltered(
                             request.getParameter("startDate"),
                             request.getParameter("endDate"),
                             request.getParameter("startTime"),
@@ -53,17 +52,17 @@ public class MealServlet extends HttpServlet {
                     )));
             request.getRequestDispatcher("/meals.jsp").forward(request, response);
         }
-
         Meal meal;
         LocalDateTime ld = LocalDateTime.parse(request.getParameter("dateTime"));
         String description = request.getParameter("description");
         Integer calories = Integer.parseInt(request.getParameter("calories"));
         if (request.getParameter("id").isEmpty()) {
             meal = new Meal(ld, description, calories);
+            mealRestController.create(meal);
         } else {
             meal = new Meal(getId(request), ld, description, calories);
+            mealRestController.update(meal);
         }
-        mealRestController.save(meal);
         log.info(meal.isNew() ? "Create {}" : "Update {}", meal);
         response.sendRedirect("meals");
     }
@@ -71,7 +70,6 @@ public class MealServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
-
         switch (action == null ? "all" : action) {
             case "delete":
                 int id = getId(request);

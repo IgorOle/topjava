@@ -6,6 +6,7 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.to.MealWithExceed;
 import ru.javawebinar.topjava.util.DateTimeUtil;
+import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.web.SecurityUtil;
 
 import java.time.LocalDate;
@@ -23,15 +24,16 @@ public class MealRestController {
     }
 
     public Collection<MealWithExceed> getAll() {
-        return service.getAll(SecurityUtil.authUserId());
+        return MealsUtil.getWithExceeded(service.getAll(SecurityUtil.authUserId()), SecurityUtil.authUserCaloriesPerDay());
     }
 
-    public Collection<MealWithExceed> getAll(String startDate, String endDate, String startTime, String endTime) {
-        return service.getAll(SecurityUtil.authUserId(),
+    public Collection<MealWithExceed> getAllFiltered(String startDate, String endDate, String startTime, String endTime) {
+        return MealsUtil.getWithExceeded(service.getAllFiltered(SecurityUtil.authUserId(),
                 "".equals(startDate) ? DateTimeUtil.MIN_DATE : LocalDate.parse(startDate),
                 "".equals(endDate) ? DateTimeUtil.MAX_DATE : LocalDate.parse(endDate),
                 "".equals(startTime) ? LocalTime.MIN : LocalTime.parse(startTime),
-                "".equals(endTime) ? LocalTime.MAX : LocalTime.parse(endTime)
+                "".equals(endTime) ? LocalTime.MAX : LocalTime.parse(endTime)),
+                SecurityUtil.authUserCaloriesPerDay()
         );
     }
 
@@ -39,12 +41,16 @@ public class MealRestController {
         service.delete(id, SecurityUtil.authUserId());
     }
 
-    public Meal get(Integer id) {
+    public Meal get(int id) {
         return service.get(id, SecurityUtil.authUserId());
     }
 
-    public void save(Meal meal) {
-        service.save(SecurityUtil.authUserId(), meal);
+    public void update(Meal meal) {
+        service.update(SecurityUtil.authUserId(), meal);
+    }
+
+    public Meal create(Meal meal) {
+        return service.create(SecurityUtil.authUserId(), meal);
     }
 
 }

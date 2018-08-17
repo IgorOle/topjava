@@ -10,7 +10,7 @@ public class DateTimeUtil {
     public static final LocalDate MIN_DATE = LocalDate.parse("1990-01-01 00:00", DATE_TIME_FORMATTER);
     public static final LocalDate MAX_DATE = LocalDate.parse("3000-01-01 23:59", DATE_TIME_FORMATTER);
 
-    public static <T extends Comparable> boolean isBetween(T value, T start, T end) {
+    public static <T extends Comparable<? super T>> boolean isBetween(T value, T start, T end) {
         return value.compareTo(start) >= 0 && value.compareTo(end) <= 0;
     }
 

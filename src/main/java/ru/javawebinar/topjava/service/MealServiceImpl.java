@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
-import ru.javawebinar.topjava.to.MealWithExceed;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.LocalDate;
@@ -24,27 +23,32 @@ public class MealServiceImpl implements MealService {
     }
 
     @Override
-    public Collection<MealWithExceed> getAll(Integer userId) throws NotFoundException {
+    public Collection<Meal> getAll(int userId) {
         return checkNotFound(repository.getAll(userId), "not found meals");
     }
 
     @Override
-    public Collection<MealWithExceed> getAll(Integer userId, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime) throws NotFoundException {
-        return repository.getAll(userId, startDate, endDate, startTime, endTime);
+    public Collection<Meal> getAllFiltered(int userId, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime) throws NotFoundException {
+        return repository.getAllFiltered(userId, startDate, endDate, startTime, endTime);
     }
 
     @Override
     public void delete(int id, int userId) throws NotFoundException {
-        checkNotFound(repository.delete(id, userId), "not fond meal");
+        checkNotFound(repository.delete(id, userId), "not fond mealId=" + id);
     }
 
     @Override
-    public void save(Integer userId, Meal meal) throws NotFoundException {
-        checkNotFound(repository.save(userId, meal), "not fond meal");
+    public Meal create(int userId, Meal meal) {
+        return repository.save(userId, meal);
+    }
+
+    @Override
+    public void update(int userId, Meal meal) throws NotFoundException {
+        checkNotFound(repository.save(userId, meal), "not fond mealId=" + meal.getId());
     }
 
     @Override
     public Meal get(int id, int userId) throws NotFoundException {
-        return checkNotFound(repository.get(id, userId), "not found meal");
+        return checkNotFound(repository.get(id, userId), "not fond mealId=" + id);
     }
 }
