@@ -6,6 +6,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.web.meal.MealRestController;
+import ru.javawebinar.topjava.web.user.AdminRestController;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -23,6 +24,7 @@ public class MealServlet extends HttpServlet {
 
     MealRestController mealRestController;
     ConfigurableApplicationContext appCtx;
+    AdminRestController adminRestController;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -30,6 +32,7 @@ public class MealServlet extends HttpServlet {
         appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml");
         System.out.println("Bean definition names: " + Arrays.toString(appCtx.getBeanDefinitionNames()));
         mealRestController = appCtx.getBean(MealRestController.class);
+        adminRestController = appCtx.getBean(AdminRestController.class);
     }
 
     @Override
@@ -61,7 +64,7 @@ public class MealServlet extends HttpServlet {
             mealRestController.create(meal);
         } else {
             meal = new Meal(getId(request), ld, description, calories);
-            mealRestController.update(meal);
+            mealRestController.update(getId(request), meal);
         }
         log.info(meal.isNew() ? "Create {}" : "Update {}", meal);
         response.sendRedirect("meals");
@@ -88,6 +91,7 @@ public class MealServlet extends HttpServlet {
             case "all":
             default:
                 log.info("getAll");
+                log.info("test method getAll - " + adminRestController.getAll().toString());
                 request.setAttribute("meals", (mealRestController.getAll()));
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
