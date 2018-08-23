@@ -51,7 +51,10 @@ public class InMemoryUserRepositoryImpl implements UserRepository {
         log.info("getAll");
         return repository.isEmpty() ?
                 Collections.emptyList() :
-                repository.values().stream().sorted(Comparator.comparing(User::getName)).collect(Collectors.toList());
+                repository.values()
+                        .stream()
+                        .sorted(Comparator.comparing(User::getName).thenComparing(User::getEmail))
+                        .collect(Collectors.toList());
     }
 
     @Override

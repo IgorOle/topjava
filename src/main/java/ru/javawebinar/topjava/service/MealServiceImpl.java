@@ -7,6 +7,7 @@ import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Collection;
 
@@ -24,12 +25,12 @@ public class MealServiceImpl implements MealService {
 
     @Override
     public Collection<Meal> getAll(int userId) {
-        return checkNotFound(repository.getAll(userId), "not found meals");
+        return repository.getAll(userId);
     }
 
     @Override
-    public Collection<Meal> getAllFiltered(int userId, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime) throws NotFoundException {
-        return repository.getAllFiltered(userId, startDate, endDate, startTime, endTime);
+    public Collection<Meal> getAllFiltered(int userId, LocalDateTime start, LocalDateTime end) {
+        return repository.getAllFiltered(userId, start, end);
     }
 
     @Override

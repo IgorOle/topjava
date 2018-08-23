@@ -11,9 +11,11 @@ import java.time.LocalTime;
 import java.time.Month;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Repository
@@ -22,12 +24,12 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
     private AtomicInteger counter = new AtomicInteger(0);
 
     {
-        save(1, new Meal(LocalDateTime.of(2015, Month.MAY, 30, 10, 0), "Завтрак", 500));
-        save(1, new Meal(LocalDateTime.of(2015, Month.MAY, 30, 13, 0), "Обед", 1000));
-        save(1, new Meal(LocalDateTime.of(2015, Month.MAY, 30, 20, 0), "Ужин", 500));
-        save(2, new Meal(LocalDateTime.of(2015, Month.MAY, 31, 10, 0), "Завтрак", 1000));
-        save(2, new Meal(LocalDateTime.of(2015, Month.MAY, 31, 13, 0), "Обед", 500));
-        save(2, new Meal(LocalDateTime.of(2015, Month.MAY, 31, 20, 0), "Ужин", 510));
+        save(0, new Meal(LocalDateTime.of(2015, Month.MAY, 30, 10, 0), "Завтрак", 500));
+        save(0, new Meal(LocalDateTime.of(2015, Month.MAY, 30, 13, 0), "Обед", 1000));
+        save(0, new Meal(LocalDateTime.of(2015, Month.MAY, 30, 20, 0), "Ужин", 500));
+        save(1, new Meal(LocalDateTime.of(2015, Month.MAY, 31, 10, 0), "Завтрак", 1000));
+        save(1, new Meal(LocalDateTime.of(2015, Month.MAY, 31, 13, 0), "Обед", 500));
+        save(1, new Meal(LocalDateTime.of(2015, Month.MAY, 31, 20, 0), "Ужин", 510));
     }
 
     @Override
@@ -55,19 +57,17 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
 
     @Override
     public Collection<Meal> getAll(int userId) {
+        return getRaw(userId, meal -> true);
+    }
+
+    public Collection<Meal> getAllFiltered(int userId, LocalDateTime start, LocalDateTime end) {
+        return getRaw(userId, meal -> DateTimeUtil.isBetween(meal.getDateTime(), start, end));
+    }
+
+    private Collection<Meal> getRaw(int userId, Predicate<Meal> filter) {
         Map<Integer, Meal> meals = repository.get(userId);
-        return meals == null ?
-                Collections.emptyList()
-                :
-                meals.values().stream().sorted((o1, o2) -> (o2.getDateTime().compareTo(o1.getDateTime()))).collect(Collectors.toList());
+        return meals == null ? Collections.emptyList() :
+                meals.values().stream().filter(filter).sorted(Comparator.comparing(Meal::getDateTime).reversed()).collect(Collectors.toList());
     }
-
-    public Collection<Meal> getAllFiltered(int userId, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime) {
-        return getAll(userId).stream()
-                .filter((m) -> DateTimeUtil.isBetween(m.getDateTime().toLocalDate(), startDate, endDate)
-                        && DateTimeUtil.isBetween(m.getDateTime().toLocalTime(), startTime, endTime))
-                .collect(Collectors.toList());
-    }
-
 }
 

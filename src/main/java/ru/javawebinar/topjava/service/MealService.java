@@ -4,13 +4,14 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Collection;
 
 public interface MealService {
     Collection<Meal> getAll(int userId);
 
-    Collection<Meal> getAllFiltered(int userId, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime);
+    Collection<Meal> getAllFiltered(int userId, LocalDateTime start, LocalDateTime end);
 
     void delete(int id, int userId) throws NotFoundException;
 

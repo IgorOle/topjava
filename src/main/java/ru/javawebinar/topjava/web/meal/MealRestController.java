@@ -10,6 +10,7 @@ import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.web.SecurityUtil;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Collection;
 import java.util.stream.Collectors;
@@ -33,19 +34,16 @@ public class MealRestController {
     }
 
     public Collection<MealWithExceed> getAllFiltered(String startDate, String endDate, String startTime, String endTime) {
-        Collection<MealWithExceed> meals = MealsUtil.getWithExceeded(service.getAllFiltered(SecurityUtil.authUserId(),
-                "".equals(startDate) ? DateTimeUtil.MIN_DATE : LocalDate.parse(startDate),
-                "".equals(endDate) ? DateTimeUtil.MAX_DATE : LocalDate.parse(endDate),
-                LocalTime.MIN,
-                LocalTime.MAX),
-                SecurityUtil.authUserCaloriesPerDay()
-        );
         LocalTime ltStart = "".equals(startTime) ? LocalTime.MIN : LocalTime.parse(startTime);
-        LocalTime ltEnd = "".equals(startTime) ? LocalTime.MAX : LocalTime.parse(endTime);
-        return meals.stream()
-                .filter(mealWithExceed ->
-                        DateTimeUtil.isBetween(mealWithExceed.getDateTime().toLocalTime(), ltStart, ltEnd))
-                .collect(Collectors.toList());
+        LocalTime ltEnd = "".equals(endTime) ? LocalTime.MAX : LocalTime.parse(endTime);
+        LocalDateTime start = "".equals(startDate) ? DateTimeUtil.MIN_DATE : LocalDateTime.parse(startDate + " 00:00", DateTimeUtil.DATE_TIME_FORMATTER);
+        LocalDateTime end = "".equals(endDate) ? DateTimeUtil.MAX_DATE : LocalDateTime.parse(endDate + " 23:59", DateTimeUtil.DATE_TIME_FORMATTER);
+
+        return MealsUtil.getFilteredWithExceeded(
+                service.getAllFiltered(SecurityUtil.authUserId(), start, end),
+                SecurityUtil.authUserCaloriesPerDay(),
+                meal -> DateTimeUtil.isBetween(meal.getDateTime().toLocalTime(), ltStart, ltEnd)
+        );
     }
 
     public void delete(int id) {

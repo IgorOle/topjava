@@ -24,7 +24,6 @@ public class MealServlet extends HttpServlet {
 
     MealRestController mealRestController;
     ConfigurableApplicationContext appCtx;
-    AdminRestController adminRestController;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -32,7 +31,6 @@ public class MealServlet extends HttpServlet {
         appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml");
         System.out.println("Bean definition names: " + Arrays.toString(appCtx.getBeanDefinitionNames()));
         mealRestController = appCtx.getBean(MealRestController.class);
-        adminRestController = appCtx.getBean(AdminRestController.class);
     }
 
     @Override
@@ -91,7 +89,6 @@ public class MealServlet extends HttpServlet {
             case "all":
             default:
                 log.info("getAll");
-                log.info("test method getAll - " + adminRestController.getAll().toString());
                 request.setAttribute("meals", (mealRestController.getAll()));
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
