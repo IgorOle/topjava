@@ -25,21 +25,14 @@ CREATE TABLE user_roles
   FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
 
-create table if not exists meals
+create table meals
 (
-	id integer default nextval('global_seq') not null
-		constraint meals_pk
-			primary key,
-	date_time timestamp,
-	description text,
-	calories integer,
-	user_id integer not null
-		constraint meals_user_id_fkey
-			references users
-				on delete cascade
-)
-;
+	id integer primary key default nextval('global_seq'),
+	date_time timestamp not null,
+	description text not null,
+	calories integer not null,
+	user_id integer not null,
+	constraint meals_user_id_fkey unique (user_id, date_time),
+	foreign key (user_id) references users (id) on delete cascade
+);
 
-create unique index if not exists meal_date
-	on meals ("date_time", user_id)
-;

@@ -16,7 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static ru.javawebinar.topjava.MealTestData.*;
-import static ru.javawebinar.topjava.model.AbstractBaseEntity.START_SEQ;
+import static ru.javawebinar.topjava.UserTestData.USER_ID;
 
 @ContextConfiguration({
         "classpath:spring/spring-app.xml",
@@ -26,16 +26,14 @@ import static ru.javawebinar.topjava.model.AbstractBaseEntity.START_SEQ;
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
 public class MealServiceTest {
 
-    public static final int USER_ID = START_SEQ;
-
     @Autowired
     MealService service;
 
     @Test
     public void create() {
-        service.delete(MEAL2.getId(), USER_ID);
-        Meal actual = service.create(new Meal(MEAL2.getDateTime(), MEAL2.getDescription(), MEAL2.getCalories()), USER_ID);
-        assertMatch(actual, MEAL2);
+        Meal meal = new Meal(LocalDateTime.of(2018, 9, 4, 9, 14, 0), "завтрак0", 500);
+        service.create(meal, USER_ID);
+        assertMatch(service.getAll(USER_ID), Arrays.asList(MEAL4, MEAL3, MEAL2, meal));
     }
 
     @Test
