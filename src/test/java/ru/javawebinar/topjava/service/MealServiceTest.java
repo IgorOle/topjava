@@ -31,20 +31,17 @@ public class MealServiceTest {
 
     @Test
     public void create() {
-        Meal meal = new Meal(LocalDateTime.of(2018, 9, 4, 9, 14, 0), "завтрак0", 500);
+        Meal meal = new Meal(LocalDateTime.of(2018, 9, 9, 9, 14, 0), "завтрак0", 500);
         service.create(meal, USER_ID);
-        assertMatch(service.getAll(USER_ID), Arrays.asList(MEAL4, MEAL3, MEAL2, meal));
+        assertMatch(service.getAll(USER_ID), Arrays.asList(meal, MEAL4, MEAL3, MEAL2));
     }
 
     @Test
     public void update() {
-        int calories = 3000;
-        Meal expected = new Meal(MEAL2);
-        expected.setCalories(calories);
-        Meal actual = service.get(expected.getId(), USER_ID);
-        actual.setCalories(calories);
-        actual = service.update(actual, USER_ID);
-        assertMatch(actual, expected);
+        int mealId = 100003;
+        Meal expectedMeal = new Meal(mealId, LocalDateTime.of(2011, 1, 1, 9, 14, 0), "завтрак1", 111);
+        service.update(expectedMeal , USER_ID);
+        assertMatch(service.get(mealId, USER_ID), expectedMeal);
     }
 
     @Test
@@ -89,25 +86,17 @@ public class MealServiceTest {
     @Test(expected = NotFoundException.class)
     public void getForeign() {
         Meal meal = service.get(MEAL2.getId(), USER_ID + 1);
-        assertMatch(meal, MEAL2);
     }
 
     @Test(expected = NotFoundException.class)
     public void updateForeign() {
-        int calories = 3000;
-        Meal expected = new Meal(MEAL2);
-        expected.setCalories(calories);
-        Meal actual = service.get(expected.getId(), USER_ID);
-        actual.setCalories(calories);
-        actual = service.update(actual, USER_ID + 1);
-        assertMatch(actual, expected);
+        int mealId = 100003;
+        Meal meal = new Meal(mealId, LocalDateTime.of(2011, 1, 1, 9, 14, 0), "завтрак1", 111);
+        service.update(meal, USER_ID + 1);
     }
 
     @Test(expected = NotFoundException.class)
     public void deleteForeign() {
-        List<Meal> expected = Arrays.asList(MEAL4, MEAL3);
         service.delete(MEAL2.getId(), USER_ID + 1);
-        assertMatch(service.getAll(USER_ID), expected);
     }
-
 }

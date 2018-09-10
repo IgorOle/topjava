@@ -20,4 +20,4 @@ INSERT INTO meals (id, date_time, description, calories, user_id) VALUES
     (100005, '2018-09-05 08:15:00.000000', 'завтрак1', 400, 100001),
     (100006, '2018-09-05 12:16:00.000000', 'обед1', 800, 100001);
 
---ALTER SEQUENCE global_seq RESTART WITH 100007;
+ALTER SEQUENCE global_seq RESTART WITH 100009;
