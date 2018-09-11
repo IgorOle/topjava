@@ -14,6 +14,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import static ru.javawebinar.topjava.MealTestData.*;
 import static ru.javawebinar.topjava.UserTestData.USER_ID;
@@ -85,13 +86,12 @@ public class MealServiceTest {
 
     @Test(expected = NotFoundException.class)
     public void getForeign() {
-        Meal meal = service.get(MEAL2.getId(), USER_ID + 1);
+        service.get(MEAL2.getId(), USER_ID + 1);
     }
 
     @Test(expected = NotFoundException.class)
     public void updateForeign() {
-        int mealId = 100003;
-        Meal meal = new Meal(mealId, LocalDateTime.of(2011, 1, 1, 9, 14, 0), "завтрак1", 111);
+        Meal meal = new Meal(MEAL3.getId(), LocalDateTime.of(2011, 1, 1, 9, 14, 0), "завтрак1", 111);
         service.update(meal, USER_ID + 1);
     }
 
