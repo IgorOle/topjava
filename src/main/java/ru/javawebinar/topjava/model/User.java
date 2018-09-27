@@ -25,6 +25,9 @@ public class User extends AbstractNamedEntity {
     public static final String BY_EMAIL = "User.getByEmail";
     public static final String ALL_SORTED = "User.getAllSorted";
 
+    @OneToMany(mappedBy = "user")
+    private List<Meal> meals;
+
     @Column(name = "email", nullable = false, unique = true)
     @Email
     @NotBlank
