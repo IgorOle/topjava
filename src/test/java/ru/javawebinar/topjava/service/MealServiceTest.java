@@ -4,7 +4,7 @@ import org.junit.AfterClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.junit.rules.TestWatcher;
+import org.junit.rules.Stopwatch;
 import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -40,17 +40,10 @@ public class MealServiceTest {
     public ExpectedException thrown = ExpectedException.none();
 
     @Rule
-    public TestWatcher watcher = new TestWatcher() {
-        long start;
-
+    public Stopwatch stopwatch = new Stopwatch() {
         @Override
-        protected void starting(Description description) {
-            start = System.currentTimeMillis();
-        }
-
-        @Override
-        protected void finished(Description description) {
-            String m = "Metering:" + description.getMethodName() + " = " + (System.currentTimeMillis() - start + " ms ");
+        protected void finished(long nanos, Description description) {
+            String m = "Metering:" + description.getMethodName() + " = " + (nanos / 1000_000) + " ms ";
             metering.append(m + "\r\n");
             log.info(m);
         }
