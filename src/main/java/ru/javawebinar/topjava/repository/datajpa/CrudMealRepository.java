@@ -10,12 +10,12 @@ import ru.javawebinar.topjava.model.Meal;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Transactional(readOnly = true)
 public interface CrudMealRepository extends JpaRepository<Meal, Integer> {
 
     @Query(name = Meal.ALL_SORTED)
     List<Meal> getAllByUserId(@Param("userId") int userId);
 
-    @Transactional
     @Override
     Meal save(Meal meal);
 
@@ -27,5 +27,7 @@ public interface CrudMealRepository extends JpaRepository<Meal, Integer> {
     @Query(name = Meal.GET_BETWEEN)
     List<Meal> getBetween(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate, @Param("userId") int userId);
 
+    @Query("SELECT m FROM Meal m JOIN FETCH m.user WHERE m.id=:id and m.user.id=:userId")
+    Meal getMealWithUser(@Param("id") int id, @Param("userId") int userId);
 
 }

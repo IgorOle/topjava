@@ -59,7 +59,6 @@ public abstract class JdbcMealRepositoryImpl<T> implements MealRepository {
     }
 
 
-
     @Autowired
     public JdbcMealRepositoryImpl(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         this.insertMeal = new SimpleJdbcInsert(jdbcTemplate)
