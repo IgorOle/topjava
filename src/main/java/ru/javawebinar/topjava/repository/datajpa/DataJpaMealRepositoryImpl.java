@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
+import static ru.javawebinar.topjava.util.ValidationUtil.checkNotFound;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -49,6 +50,6 @@ public class DataJpaMealRepositoryImpl implements MealRepository {
 
     @Override
     public Meal getMealWithUser(int id, int userId) {
-        return crudMealRepository.getMealWithUser(id, userId);
+        return  checkNotFound(crudMealRepository.getMealWithUser(id, userId), "incorrect pair meal and user");
     }
 }

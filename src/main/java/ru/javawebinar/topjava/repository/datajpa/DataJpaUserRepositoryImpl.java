@@ -8,6 +8,8 @@ import ru.javawebinar.topjava.repository.UserRepository;
 
 import java.util.List;
 
+import static ru.javawebinar.topjava.util.ValidationUtil.checkNotFound;
+
 @Repository
 public class DataJpaUserRepositoryImpl implements UserRepository {
     private static final Sort SORT_NAME_EMAIL = new Sort(Sort.Direction.ASC, "name", "email");
@@ -40,7 +42,9 @@ public class DataJpaUserRepositoryImpl implements UserRepository {
         return crudRepository.findAll(SORT_NAME_EMAIL);
     }
 
+    @Override
     public User getUserWithMeal(int id) {
-        return crudRepository.getUserWithMeal(id);
+        return checkNotFound(crudRepository.getUserWithMeal(id), "not found meal for userId=" + id);
     }
+
 }

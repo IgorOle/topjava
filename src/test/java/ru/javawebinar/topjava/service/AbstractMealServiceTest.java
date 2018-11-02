@@ -1,12 +1,10 @@
 package ru.javawebinar.topjava.service;
 
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.CacheManager;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
@@ -29,18 +27,8 @@ public abstract class AbstractMealServiceTest extends AbstractServiceTest {
         SLF4JBridgeHandler.install();
     }
 
-    @Before
-    public void setUp() throws Exception {
-        cacheManager.getCache("meals").clear();
-    }
-
-
     @Autowired
     protected MealService service;
-
-    @Autowired
-    private CacheManager cacheManager;
-
 
     @Test
     public void delete() throws Exception {
