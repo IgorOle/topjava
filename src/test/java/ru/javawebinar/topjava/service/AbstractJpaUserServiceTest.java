@@ -13,4 +13,6 @@ public abstract class AbstractJpaUserServiceTest extends AbstractUserServiceTest
         super.setUp();
         jpaUtil.clear2ndLevelHibernateCache();
     }
+
+
 }

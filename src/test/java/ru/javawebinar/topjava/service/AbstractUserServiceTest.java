@@ -29,10 +29,6 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
     @Autowired
     private CacheManager cacheManager;
 
-
-    @Autowired
-    private Environment environment;
-
     @Before
     public void setUp() throws Exception {
         cacheManager.getCache("users").clear();
@@ -99,7 +95,7 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
 
     @Test
     public void testValidation() throws Exception {
-        Assume.assumeTrue(!Arrays.stream(environment.getActiveProfiles()).filter(profile -> JDBC.equals(profile)).findAny().isPresent());
+        Assume.assumeTrue(super.checkProfileDoTest());
         validateRootCause(() -> service.create(new User(null, "  ", "mail@yandex.ru", "password", Role.ROLE_USER)), ConstraintViolationException.class);
         validateRootCause(() -> service.create(new User(null, "User", "  ", "password", Role.ROLE_USER)), ConstraintViolationException.class);
         validateRootCause(() -> service.create(new User(null, "User", "mail@yandex.ru", "  ", Role.ROLE_USER)), ConstraintViolationException.class);
