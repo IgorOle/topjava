@@ -1,9 +1,14 @@
 package ru.javawebinar.topjava;
 
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.ResultMatcher;
+import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.web.json.JsonUtil;
 
 import java.io.UnsupportedEncodingException;
+
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static ru.javawebinar.topjava.web.json.JsonUtil.writeValue;
 
 public class TestUtil {
 
@@ -18,5 +23,9 @@ public class TestUtil {
 
     public static <T> T readFromJson(ResultActions action, Class<T> clazz) throws UnsupportedEncodingException {
         return JsonUtil.readValue(getContent(action), clazz);
+    }
+
+    public static ResultMatcher contentJson(Meal expected) {
+        return content().json(writeValue(expected));
     }
 }
