@@ -6,6 +6,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
+import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.web.AbstractControllerTest;
 import ru.javawebinar.topjava.web.json.JsonUtil;
 
@@ -26,7 +27,12 @@ class MealRestControllerTest extends AbstractControllerTest {
     private MealService service;
 
     @Test
-    void testGetAll() {
+    void testGetAll() throws Exception {
+        mockMvc.perform(get(REST_URL))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(contentJson(MEAL6, MEAL5, MEAL4, MEAL3, MEAL2, MEAL1));
     }
 
     @Test
@@ -56,7 +62,7 @@ class MealRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void createWithLocation() throws Exception {
+    void testCreateWithLocation() throws Exception {
         Meal created = getCreated();
         ResultActions action = mockMvc.perform(post(REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -69,6 +75,16 @@ class MealRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void testGetBetween() {
+    void testGetBetween() throws Exception {
+        mockMvc.perform(get(REST_URL + "between?startDateTime=2015-05-31T10:00&endDateTime=2015-05-31T23:00:00"))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(
+                        contentJson(MealsUtil.createWithExceed(MEAL6, true),
+                                MealsUtil.createWithExceed(MEAL5, true),
+                                MealsUtil.createWithExceed(MEAL4, true)
+                        )
+                );
+
     }
 }

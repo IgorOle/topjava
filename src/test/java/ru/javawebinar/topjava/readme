@@ -1,0 +1,27 @@
+get all users                                                                                                                                                                                  
+curl -s http://localhost:8080/topjava/rest/admin/users                                                                                                                                            
+                                                                                                                                                                                                   
+get user 100001                                                                                                                                                                               
+curl -s http://localhost:8080/topjava/rest/admin/users/100001                                                                                                                                     
+                                                                                                                                                                                                   
+get all meals                                                                                                                                                                                  
+curl -s http://localhost:8080/topjava/rest/profile/meals                                                                                                                                          
+                                                                                                                                                                                                   
+get all meals                                                                                                                                                                               
+curl -s http://localhost:8080/topjava/rest/profile/meals/                                                                                                                                   
+
+get betweenEmpty meals                                                                                                                                                                                   
+curl -s "http://localhost:8080/topjava/rest/profile/meals/betweenempty?startDate=2015-05-31&startTime=07:00:00&endDate=2015-05-31"                                                     
+
+get meal 100003                                                                                                                                                                               
+curl -s http://localhost:8080/topjava/rest/profile/meals/100003                                                                                                                                                                                                                                                                                                                                    
+
+create meal                                                                                                                                                                                   
+curl -s -X POST -d '{"dateTime":"2018-12-04T12:00","description":"lunch","calories":555}' -H 'Content-Type:application/json;charset=UTF-8' http://localhost:8080/topjava/rest/profile/meals
+                                                                                                                                                                                                   
+update meal 100006                                                                                                                                                                                    
+curl -s -X PUT -d '{"dateTime":"2015-05-20T07:00", "description":"UPD descr", "calories":100}' -H 'Content-Type: application/json' http://localhost:8080/topjava/rest/profile/meals/100006
+                                                                                                                                                                                                   
+delete meal                                                                                                                                                                                   
+curl -s -X DELETE http://localhost:8080/topjava/rest/profile/meals/100002                                                                                                                         
+                                                                                                                                                                                                   

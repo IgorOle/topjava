@@ -38,7 +38,7 @@ class RootControllerTest extends AbstractControllerTest {
                 .andExpect(forwardedUrl("/WEB-INF/jsp/meals.jsp"))
                 .andExpect(
                         model().attribute("meals",
-                                            MealsUtil.getWithExcess(MealTestData.MEALS, SecurityUtil.authUserCaloriesPerDay()))
+                                MealsUtil.getWithExcess(MealTestData.MEALS, SecurityUtil.authUserCaloriesPerDay()))
                 );
     }
 
