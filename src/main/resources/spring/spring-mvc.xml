@@ -5,9 +5,9 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
+
+
     <bean class="ru.javawebinar.topjava.web.json.JacksonObjectMapper" id="objectMapper" factory-method="getMapper"/>
-
-
     <mvc:annotation-driven conversion-service="conversionService">
         <mvc:message-converters>
             <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
@@ -22,6 +22,9 @@
                 </property>
             </bean>
         </mvc:message-converters>
+        <!--<mvc:argument-resolvers>-->
+            <!--<bean class="org.springframework.security.web.method.annotation.AuthenticationPrincipalArgumentResolver "/>-->
+        <!--</mvc:argument-resolvers>-->
     </mvc:annotation-driven>
 
     <bean class="org.springframework.context.support.ConversionServiceFactoryBean" id="conversionService">
@@ -29,8 +32,6 @@
             <set>
                 <bean class="ru.javawebinar.topjava.util.StringToLocalDT.StringToLocalDate"/>
                 <bean class="ru.javawebinar.topjava.util.StringToLocalDT.StringToLocalTime"/>
-                <bean class="ru.javawebinar.topjava.util.StringToLocalDT.StringToLocalDateTime"/>
-
             </set>
         </property>
     </bean>

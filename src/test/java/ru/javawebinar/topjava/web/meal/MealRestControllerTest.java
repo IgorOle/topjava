@@ -10,6 +10,8 @@ import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.web.AbstractControllerTest;
 import ru.javawebinar.topjava.web.json.JsonUtil;
 
+import java.util.Arrays;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -17,6 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static ru.javawebinar.topjava.MealTestData.*;
 import static ru.javawebinar.topjava.TestUtil.contentJson;
 import static ru.javawebinar.topjava.TestUtil.readFromJson;
+import static ru.javawebinar.topjava.UserTestData.USER;
 import static ru.javawebinar.topjava.model.AbstractBaseEntity.START_SEQ;
 
 
@@ -27,12 +30,12 @@ class MealRestControllerTest extends AbstractControllerTest {
     private MealService service;
 
     @Test
-    void testGetAll() throws Exception {
-        mockMvc.perform(get(REST_URL))
+    void testGetAll()  throws Exception {
+        mockMvc.perform(get(REST_URL ))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(contentJson(MEAL6, MEAL5, MEAL4, MEAL3, MEAL2, MEAL1));
+                .andExpect(contentJson(MealsUtil.getWithExcess(MEALS, USER.getCaloriesPerDay())));
     }
 
     @Test
@@ -76,13 +79,12 @@ class MealRestControllerTest extends AbstractControllerTest {
 
     @Test
     void testGetBetween() throws Exception {
-        mockMvc.perform(get(REST_URL + "between?startDateTime=2015-05-31T10:00&endDateTime=2015-05-31T23:00:00"))
+        mockMvc.perform(get(REST_URL + "between?startDateTime=2015-05-31T12:00&endDateTime=2015-05-31T23:00:00"))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(
-                        contentJson(MealsUtil.createWithExceed(MEAL6, true),
-                                MealsUtil.createWithExceed(MEAL5, true),
-                                MealsUtil.createWithExceed(MEAL4, true)
+                        contentJson(
+                                MealsUtil.getWithExcess(Arrays.asList(MEAL6, MEAL5), USER.getCaloriesPerDay())
                         )
                 );
 

@@ -35,6 +35,7 @@ public class MealRestController extends AbstractMealController {
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void update(@PathVariable("id") int id, @RequestBody Meal meal) {
         super.update(meal, id);
     }

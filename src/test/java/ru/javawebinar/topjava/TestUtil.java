@@ -1,10 +1,7 @@
 package ru.javawebinar.topjava;
 
-import org.assertj.core.util.Arrays;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.ResultMatcher;
-import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.to.MealTo;
 import ru.javawebinar.topjava.web.json.JsonUtil;
 
 import java.io.UnsupportedEncodingException;
@@ -27,20 +24,13 @@ public class TestUtil {
         return JsonUtil.readValue(getContent(action), clazz);
     }
 
-    public static ResultMatcher contentJson(Meal expected) {
+    public static <T> ResultMatcher contentJson(T expected) {
         return content().json(writeValue(expected));
     }
 
-    public static ResultMatcher contentJson(MealTo expected) {
-        return content().json(writeValue(expected));
+    public static <T> ResultMatcher contentJsonArray(T... expected) {
+        return contentJson(expected);
     }
 
-    public static ResultMatcher contentJson(MealTo... expected) {
-        return content().json(writeValue(Arrays.asList(expected)));
-    }
-
-    public static ResultMatcher contentJson(Meal... expected) {
-        return content().json(writeValue(Arrays.asList(expected)));
-    }
 
 }
