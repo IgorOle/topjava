@@ -50,7 +50,7 @@ class MealRestControllerTest extends AbstractControllerTest {
         Meal updated = getUpdated();
         mockMvc.perform(put(REST_URL + MEAL1_ID).contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(updated)))
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
 
         assertMatch(service.get(MEAL1_ID, START_SEQ), updated);
     }
@@ -79,12 +79,12 @@ class MealRestControllerTest extends AbstractControllerTest {
 
     @Test
     void testGetBetween() throws Exception {
-        mockMvc.perform(get(REST_URL + "between?startDateTime=2015-05-31T12:00&endDateTime=2015-05-31T23:00:00"))
+        mockMvc.perform(get(REST_URL + "between?startDateTime=2015-05-31T08:00:00&endDateTime=2015-05-31T23:00:00"))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(
                         contentJson(
-                                MealsUtil.getWithExcess(Arrays.asList(MEAL6, MEAL5), USER.getCaloriesPerDay())
+                                MealsUtil.getWithExcess(Arrays.asList(MEAL6, MEAL5, MEAL4), USER.getCaloriesPerDay())
                         )
                 );
 

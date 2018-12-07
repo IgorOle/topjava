@@ -32,6 +32,7 @@
             <set>
                 <bean class="ru.javawebinar.topjava.util.StringToLocalDT.StringToLocalDate"/>
                 <bean class="ru.javawebinar.topjava.util.StringToLocalDT.StringToLocalTime"/>
+                <bean class="ru.javawebinar.topjava.util.StringToLocalDT.StringToLocalDateTime"/>
             </set>
         </property>
     </bean>
