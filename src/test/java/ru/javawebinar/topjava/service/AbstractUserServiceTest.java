@@ -88,4 +88,15 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
         List<User> all = service.getAll();
         assertMatch(all, ADMIN, USER);
     }
+
+    @Test
+    void setEnableUser() {
+        User expected = new User(ADMIN);
+        expected.setEnabled(false);
+        service.setEnableUser(ADMIN_ID, false);
+        assertMatch(service.get(ADMIN_ID), expected);
+        expected.setEnabled(true);
+        service.setEnableUser(ADMIN_ID, true);
+        assertMatch(service.get(ADMIN_ID), expected);
+    }
 }

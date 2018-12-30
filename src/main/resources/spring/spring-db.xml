@@ -62,9 +62,9 @@
 
         <tx:annotation-driven/>
 
-        <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-            <constructor-arg ref="dataSource"/>
-        </bean>
+        <!--<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">-->
+            <!--<constructor-arg ref="dataSource"/>-->
+        <!--</bean>-->
 
         <bean id="transactionManager"
               class="org.springframework.jdbc.datasource.DataSourceTransactionManager">

@@ -12,6 +12,15 @@ import java.util.List;
 @RequestMapping("/ajax/admin/users")
 public class AdminAjaxController extends AbstractUserController {
 
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    @PostMapping(value = "/{id}/enable/{enable}")
+    public void setStatusUser(
+            @PathVariable("id") Integer id,
+            @PathVariable("enable") Boolean enable) {
+        super.setEnableUser(id, enable);
+    }
+
+
     @Override
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<User> getAll() {
