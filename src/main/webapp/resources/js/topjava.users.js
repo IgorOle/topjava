@@ -2,10 +2,17 @@ const ajaxUrl = "ajax/admin/users/";
 let datatableApi;
 
 function setEnableUser(obj, id) {
-    $.post(ajaxUrl + id + "/enable/" + obj.checked).done(function () {
-        obj.closest("tr").setAttribute("data-userEnable", obj.checked);
-        successNoty(obj.checked ? "Enabled" : "Disabled");
-    });
+    let state = obj.checked;
+    $.post(ajaxUrl + id + "/enable/" + obj.checked)
+        .done(function () {
+            obj.closest("tr").setAttribute("data-userEnable", state);
+            successNoty(obj.checked ? "Enabled" : "Disabled");
+        })
+        .fail(function () {
+            // obj.setAttribute("checked", true);
+            obj.checked = !state;
+        })
+    ;
 }
 
 // $(document).ready(function () {

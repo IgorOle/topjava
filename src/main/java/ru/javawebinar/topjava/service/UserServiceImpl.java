@@ -71,8 +71,8 @@ public class UserServiceImpl implements UserService {
     @CacheEvict(value = "users", allEntries = true)
     @Override
     public void setEnableUser(int id, boolean enable) {
-        User user = repository.get(id);
-        checkNotFoundWithId(user, id);
+        User user = get(id);
         user.setEnabled(enable);
+        update(user);
     }
 }

@@ -16,10 +16,9 @@ public class AdminAjaxController extends AbstractUserController {
     @PostMapping(value = "/{id}/enable/{enable}")
     public void setStatusUser(
             @PathVariable("id") Integer id,
-            @PathVariable("enable") Boolean enable) {
+            @PathVariable("enable") boolean enable) {
         super.setEnableUser(id, enable);
     }
-
 
     @Override
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)

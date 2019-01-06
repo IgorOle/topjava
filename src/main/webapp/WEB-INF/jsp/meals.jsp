@@ -32,7 +32,7 @@
             <dd><input type="time" name="endTime" value="${param.endTime}"></dd>
         </dl>
     </form>
-    <button class="btn btn-primary" onclick="setFilter();">
+    <button class="btn btn-primary" onclick="updateTable();">
         <span class="fa fa-filter"></span>
     </button>
     <button class="btn btn-primary" onclick="resetFilter();">
