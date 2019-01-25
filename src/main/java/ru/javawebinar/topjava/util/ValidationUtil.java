@@ -74,4 +74,6 @@ public class ValidationUtil {
                 });
         return new ResponseEntity<>(joiner.toString(), HttpStatus.UNPROCESSABLE_ENTITY);
     }
+
+    public interface Validator{}
 }

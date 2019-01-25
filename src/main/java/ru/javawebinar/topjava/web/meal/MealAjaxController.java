@@ -4,13 +4,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.to.MealTo;
-import ru.javawebinar.topjava.util.MealsUtil;
+import ru.javawebinar.topjava.util.ValidationSequence;
 import ru.javawebinar.topjava.util.ValidationUtil;
 
-import javax.validation.Valid;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -40,14 +40,14 @@ public class MealAjaxController extends AbstractMealController {
 
     @PostMapping
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public ResponseEntity<Object> createOrUpdate(@Valid MealTo meal, BindingResult result) {
+    public ResponseEntity<Object> createOrUpdate(@Validated(ValidationSequence.class) Meal meal, BindingResult result) {
         if (result.hasErrors()) {
             return ValidationUtil.buildMessage(result);
         }
         if (meal.isNew()) {
-            super.create(MealsUtil.createNewFromTo(meal));
+            super.create(meal);
         } else {
-            super.update(MealsUtil.createNewFromTo(meal), meal.getId());
+            super.update(meal, meal.getId());
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }
