@@ -4,7 +4,6 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.format.annotation.DateTimeFormat;
-import ru.javawebinar.topjava.util.ValidationUtil;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -43,7 +42,7 @@ public class Meal extends AbstractBaseEntity {
 
     @Column(name = "calories", nullable = false)
     @Range(min = 10, max = 5000)
-    @NotNull(groups = {ValidationUtil.Validator.class})
+    @NotNull
     private Integer calories;
 
 
@@ -95,7 +94,7 @@ public class Meal extends AbstractBaseEntity {
         this.description = description;
     }
 
-    public void setCalories(int calories) {
+    public void setCalories(Integer calories) {
         this.calories = calories;
     }
 
