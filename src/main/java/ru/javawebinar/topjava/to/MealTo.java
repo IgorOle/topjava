@@ -50,10 +50,6 @@ public class MealTo extends BaseTo {
         return calories;
     }
 
-    public boolean isExcess() {
-        return excess;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
