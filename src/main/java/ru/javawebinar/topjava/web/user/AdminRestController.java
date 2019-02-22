@@ -1,19 +1,33 @@
 package ru.javawebinar.topjava.web.user;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.javawebinar.topjava.model.User;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
 @RestController
 @RequestMapping(AdminRestController.REST_URL)
+@Controller
 public class AdminRestController extends AbstractUserController {
     static final String REST_URL = "/rest/admin/users";
+
+    @Autowired
+    UniqMailValidator validator;
+
+    @InitBinder("user")
+    protected void initBinder(WebDataBinder binder) {
+        binder.setValidator(validator);
+
+    }
 
     @Override
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -27,13 +41,10 @@ public class AdminRestController extends AbstractUserController {
         return super.get(id);
     }
 
+    @ResponseStatus(value = HttpStatus.CREATED)
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<User> createWithLocation(@RequestBody User user) {
+    public ResponseEntity createWithLocation(@Valid @RequestBody User user) {
         User created = super.create(user);
-
-//        HttpHeaders httpHeaders = new HttpHeaders();
-//        httpHeaders.setLocation(uriOfNewResource);
-
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
                 .buildAndExpand(created.getId()).toUri();
@@ -51,7 +62,7 @@ public class AdminRestController extends AbstractUserController {
     @Override
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void update(@RequestBody User user, @PathVariable("id") int id) {
+    public void update(@Valid @RequestBody User user, @PathVariable("id") int id) {
         super.update(user, id);
     }
 
