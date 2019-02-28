@@ -18,6 +18,10 @@ public class UserUtil {
         return new UserTo(user.getId(), user.getName(), user.getEmail(), user.getPassword(), user.getCaloriesPerDay());
     }
 
+    public static User asUser(UserTo userTo) {
+        return new User(userTo.getId(), userTo.getName(), userTo.getEmail(), userTo.getPassword(), DEFAULT_CALORIES_PER_DAY, Role.ROLE_USER);
+    }
+
     public static User updateFromTo(User user, UserTo userTo) {
         user.setName(userTo.getName());
         user.setEmail(userTo.getEmail().toLowerCase());
