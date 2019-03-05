@@ -1,9 +1,7 @@
 package ru.javawebinar.topjava.web.user;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.to.UserTo;
@@ -15,15 +13,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/ajax/admin/users")
 public class AdminAjaxController extends AbstractUserController {
-
-    @Autowired
-    UniqMailValidator validator;
-
-    @InitBinder("userTo")
-    protected void initBinder(WebDataBinder binder) {
-        binder.addValidators(validator);
-
-    }
 
     @Override
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -44,7 +33,6 @@ public class AdminAjaxController extends AbstractUserController {
         super.delete(id);
     }
 
-    @ResponseStatus(value = HttpStatus.OK)
     @PostMapping
     public void createOrUpdate(@Valid UserTo userTo) {
         if (userTo.isNew()) {

@@ -1,10 +1,8 @@
 package ru.javawebinar.topjava.web.user;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.javawebinar.topjava.model.User;
@@ -17,14 +15,6 @@ import java.util.List;
 @RequestMapping(AdminRestController.REST_URL)
 public class AdminRestController extends AbstractUserController {
     static final String REST_URL = "/rest/admin/users";
-
-    @Autowired
-    UniqMailValidator validator;
-
-    @InitBinder("user")
-    protected void initBinder(WebDataBinder binder) {
-        binder.addValidators(validator);
-    }
 
     @Override
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
