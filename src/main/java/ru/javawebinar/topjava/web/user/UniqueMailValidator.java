@@ -6,11 +6,15 @@ import org.springframework.validation.Errors;
 import ru.javawebinar.topjava.HasEmail;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.datajpa.CrudUserRepository;
+import ru.javawebinar.topjava.web.MessagesUtil;
 
 @Component
 public class UniqueMailValidator implements org.springframework.validation.Validator {
     @Autowired
     private CrudUserRepository repository;
+
+    @Autowired
+    MessagesUtil messagesUtil;
 
     @Override
     public boolean supports(Class<?> clazz) {
@@ -22,7 +26,7 @@ public class UniqueMailValidator implements org.springframework.validation.Valid
         HasEmail user = ((HasEmail) target);
         User dbUser = repository.getByEmail(user.getEmail().toLowerCase());
         if (dbUser != null && !dbUser.getId().equals(user.getId())) {
-            errors.rejectValue("email", "notUniqueEmail", "User with this email already exists");
+            errors.rejectValue("email", "notUniqueEmail", messagesUtil.getMessage("user.emailNotUniq"));
         }
     }
 }

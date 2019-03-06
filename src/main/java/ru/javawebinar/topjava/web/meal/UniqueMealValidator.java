@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.Errors;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.datajpa.CrudMealRepository;
+import ru.javawebinar.topjava.web.MessagesUtil;
 import ru.javawebinar.topjava.web.SecurityUtil;
 
 import java.util.List;
@@ -13,6 +14,9 @@ import java.util.List;
 public class UniqueMealValidator implements org.springframework.validation.Validator {
     @Autowired
     private CrudMealRepository repository;
+
+    @Autowired
+    MessagesUtil messagesUtil;
 
     @Override
     public boolean supports(Class<?> clazz) {
@@ -24,7 +28,7 @@ public class UniqueMealValidator implements org.springframework.validation.Valid
         Meal meal = ((Meal) target);
         List<Meal> meals = repository.getAll(SecurityUtil.safeGet().getId());
         if (meals != null && meals.stream().filter(m -> m.getDateTime().equals(meal.getDateTime())).findAny().isPresent()) {
-            errors.rejectValue("dateTime", "notUniqueDateTime", "meal with this time is present");
+            errors.rejectValue("dateTime", "notUniqueDateTime", messagesUtil.getMessage("meal.notUniqueMealDateTime"));
         }
     }
 }
