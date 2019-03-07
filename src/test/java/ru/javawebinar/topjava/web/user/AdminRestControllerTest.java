@@ -6,6 +6,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import ru.javawebinar.topjava.TestUtil;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
+import ru.javawebinar.topjava.util.exception.ErrorInfo;
 import ru.javawebinar.topjava.web.AbstractControllerTest;
 
 import java.util.Collections;
@@ -139,5 +140,28 @@ class AdminRestControllerTest extends AbstractControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(getUserMatcher(ADMIN, USER)));
+    }
+
+    @Test
+    void testUniqueMailCreate() throws Exception {
+        User expected = new User(null, "New", "admin@gmail.com", "newPass", 2300, Role.ROLE_USER, Role.ROLE_ADMIN);
+        ResultActions actions = mockMvc.perform(post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(ADMIN))
+                .content(jsonWithPassword(expected, "newPass")))
+                .andExpect(status().isUnprocessableEntity());
+        TestUtil.checkErrorInfo(readFromJsonResultActions(actions, ErrorInfo.class), messagesUtil.getMessage("user.emailNotUniq"));
+    }
+
+    @Test
+    void testUniqueMailUpdate() throws Exception {
+        User updated = new User(USER);
+        updated.setEmail("admin@gmail.com");
+        ResultActions actions = mockMvc.perform(put(REST_URL + USER_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(ADMIN))
+                .content(jsonWithPassword(updated, "newPass")))
+                .andExpect(status().isUnprocessableEntity());
+        TestUtil.checkErrorInfo(readFromJsonResultActions(actions, ErrorInfo.class), messagesUtil.getMessage("user.emailNotUniq"));
     }
 }

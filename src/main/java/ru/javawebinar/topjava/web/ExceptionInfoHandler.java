@@ -80,10 +80,12 @@ public class ExceptionInfoHandler {
             log.warn("{} at request  {}: {}", errorType, req.getRequestURL(), rootCause.toString());
         }
         BindingResult br = null;
-        if (BindException.class.equals(e.getClass())) br = ((BindException) e).getBindingResult();
-        if (MethodArgumentNotValidException.class.equals(e.getClass()))
+        if (BindException.class.equals(e.getClass())) {
+            br = ((BindException) e).getBindingResult();
+        }
+        if (MethodArgumentNotValidException.class.equals(e.getClass())) {
             br = ((MethodArgumentNotValidException) e).getBindingResult();
-
+        }
         return new ErrorInfo(req.getRequestURL(), errorType, ValidationUtil.getErrorResponse(br).toString());
     }
 }

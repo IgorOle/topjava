@@ -7,10 +7,14 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import ru.javawebinar.topjava.model.User;
+import ru.javawebinar.topjava.util.exception.ErrorInfo;
+import ru.javawebinar.topjava.util.exception.ErrorType;
 import ru.javawebinar.topjava.web.json.JsonUtil;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class TestUtil {
 
@@ -46,5 +50,10 @@ public class TestUtil {
 
     public static RequestPostProcessor userAuth(User user) {
         return SecurityMockMvcRequestPostProcessors.authentication(new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
+    }
+
+    public static void checkErrorInfo(ErrorInfo info, String msg) {
+        assertThat(info.getType()).isEqualTo(ErrorType.VALIDATION_ERROR);
+        assertThat(info.getDetail().contains(msg)).isTrue();
     }
 }

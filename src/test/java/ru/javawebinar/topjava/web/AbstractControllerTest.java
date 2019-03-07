@@ -39,6 +39,9 @@ abstract public class AbstractControllerTest {
     protected MockMvc mockMvc;
 
     @Autowired
+    public MessagesUtil messagesUtil;
+
+    @Autowired
     private CacheManager cacheManager;
 
     @Autowired(required = false)

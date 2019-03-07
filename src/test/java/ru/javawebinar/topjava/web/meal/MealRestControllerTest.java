@@ -5,8 +5,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
+import ru.javawebinar.topjava.TestUtil;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
+import ru.javawebinar.topjava.util.exception.ErrorInfo;
 import ru.javawebinar.topjava.web.AbstractControllerTest;
 import ru.javawebinar.topjava.web.json.JsonUtil;
 
@@ -147,5 +149,33 @@ class MealRestControllerTest extends AbstractControllerTest {
                 .with(userHttpBasic(USER)))
                 .andExpect(status().isOk())
                 .andExpect(getToMatcher(getWithExcess(MEALS, USER.getCaloriesPerDay())));
+    }
+
+    @Test
+    void testUniqueMealCreate() throws Exception {
+        Meal created = getCreated();
+        mockMvc.perform(post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(created))
+                .with(userHttpBasic(USER)));
+        ResultActions actions = mockMvc.perform(post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(created))
+                .with(userHttpBasic(USER)));
+        TestUtil.checkErrorInfo(readFromJsonResultActions(actions, ErrorInfo.class), messagesUtil.getMessage("meal.notUniqueMealDateTime"));
+    }
+
+    @Test
+    void testUniqueMealUpdate() throws Exception {
+        Meal updated = getUpdated();
+        mockMvc.perform(put(REST_URL + MEAL1_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(updated))
+                .with(userHttpBasic(USER)));
+        ResultActions actions = mockMvc.perform(put(REST_URL + MEAL1_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(updated))
+                .with(userHttpBasic(USER)));
+        TestUtil.checkErrorInfo(readFromJsonResultActions(actions, ErrorInfo.class), messagesUtil.getMessage("meal.notUniqueMealDateTime"));
     }
 }
